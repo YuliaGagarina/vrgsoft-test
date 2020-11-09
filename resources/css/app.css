@@ -1,0 +1,63 @@
+.option-container {
+    display: flex;
+    height: 60px;
+}
+a {
+    min-width: 30px;
+    padding: 10px 15px;
+    border: 1px solid black;
+    border-radius: 10px;
+    height: 20px;
+    margin-right: 20px;
+    transition: all 0.3s;
+    background-color: mediumaquamarine;
+}
+
+a:hover {
+    transform: scale(1.2);
+}
+
+.addition, .edition {
+    border: 1px solid black;
+    background-color: black;
+    display: none;
+
+    width: 500px;
+    margin: 20px;
+    padding: 20px;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.hidden-main {
+    position: sticky;
+    z-index: 1;
+    opacity: 0.3;
+}
+.addition-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.addition input[type='text'], .edition input[type='text'],
+.addition input[type='submit'], .edition input[type='submit'],
+.addition input[type='file'], .edition input[type='file'],
+.addition select, .edition select
+{
+    width:80%;
+    margin: 0 auto 20px;
+}
+
+.addition input[type='textarea'], .edition input[type='textarea'] {
+    width:80%;
+    height: 100px;
+    margin: 0 auto 20px;
+}
+
+li {
+    height: 45px;
+}
