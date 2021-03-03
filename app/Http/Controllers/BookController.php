@@ -136,7 +136,7 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        "<h1>you want to edit book</h1>";
+        return "<h1>you want to edit book</h1>";
     }
 
 

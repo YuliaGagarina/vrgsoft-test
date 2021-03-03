@@ -50,23 +50,9 @@
 
 
         </main>
-        <div class="addition" id="modal-add-author">
-            <button class="close">Close</button>
-            <form class="addition-form">
-                <input type="text" placeholder="Author first name">
-                <input type="text" placeholder="Author second name">
-                <input type="text" placeholder="Author's father name">
-                <input type="submit" value="Add author">
-            </form>
-        </div>
-        <div class="edition" id="modal-edit-author">
-            <button class="close">Close</button>
-            <form class="edition-form">
-                <input type="text" placeholder="Author first name">
-                <input type="text" placeholder="Author second name">
-                <input type="text" placeholder="Author's father name">
-                <input type="submit" value="Save editions">
-            </form>
+        
+        <div class="modal-window">
+            @yield('modal-window')
         </div>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
