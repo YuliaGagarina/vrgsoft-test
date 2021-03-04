@@ -1,6 +1,6 @@
 @extends('books.show')
 
-@section('modal-window')
+@section('modal-window-editing')
 
     <div class="edition" id="modal-edit-book">
         <button class="close">Close</button>
@@ -19,3 +19,6 @@
             <button type="submit" class="btn-submit">Save editions</button>
         </form>
     </div>
+
+@endsection
+

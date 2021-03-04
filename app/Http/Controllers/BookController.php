@@ -28,54 +28,6 @@ class BookController extends Controller
         return view('book', ['books' => $bookData['data']]);
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-//        $this->validate($request, [
-//            'value' => 'required'
-//        ]);
-        $book = $this->bookRepository->addBook([
-            'name' => request('name'),
-            'description' => request('description'),
-            //Загрузка картинок
-            'image' => request('image'),
-            'author' => [request('author')],
-            'author_id' => $this->getAuthor()->id,
-            'publication' => request('publication')
-        ]);
-
-        return 'Your book wad created successfully' . $book;
-    }
-
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-//        if (Book::table('books')->where('id', $id)) {
-//
-//            // Поискать детали к этому методу
-//            $book = $this->bookRepository->updateBook($id);
-//            $book->update($request->all());
-//
-//            return 'Your book wad updated successfully';
-//        } else {
-//            return 'Such book couldn`t be found.';
-//        }
-    }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -92,6 +44,7 @@ class BookController extends Controller
         }
     }
 
+
     /**
      * Display a sorted resource.
      *
@@ -105,6 +58,7 @@ class BookController extends Controller
         return view('book', ['books' => $bookData]);
     }
 
+
     /**
      * Display a found by name resource.
      *
@@ -112,9 +66,62 @@ class BookController extends Controller
      */
     public function find(Request $request)
     {
-        $books = $this->bookRepository->findBook();
+        $books = $this->bookRepository->findBook($requestParams);
         // Передать данные в представление
         return view('book');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate(request(), [
+           'name' => 'required',
+           'author' => 'required',
+           'publication' => 'required'
+        ]);
+
+        $requestParams = request(['name', 'description', 'image', 'author', 'publication']);
+        $path = $request->file('image')->store('uploads', 'public');
+        $storageLink = basename($path);
+        $requestParams['image'] = $storageLink;
+
+        $book = $this->bookRepository->addBook($requestParams);
+
+        return 'Your book wad created successfully' . $book;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+       if (Book::table('books')->where('id', $id)) {
+            $this->validate(request(), [
+                'name' => 'required',
+                'author' => 'required',
+                'publication' => 'required'
+            ]);
+           
+            $requestParams = request(['name', 'description', 'image', 'author', 'publication']);
+            $path = $request->file('image')->store('uploads', 'public');
+            $storageLink = basename($path);
+            $requestParams['image'] = $storageLink;
+            $book = $this->bookRepository->updateBook($id, $requestParams);
+            // $book->update($request->all());
+
+           return 'Your book wad updated successfully';
+       } else {
+           return 'Such book couldn`t be found.';
+       }
     }
 
     /**
@@ -126,27 +133,5 @@ class BookController extends Controller
     public function show($id)
     {
         return "<h1>you want to see the book</h1>";
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        return "<h1>you want to edit book</h1>";
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return "<h1>you are creating book!</h1>";
     }
 }

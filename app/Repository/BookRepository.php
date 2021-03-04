@@ -27,7 +27,7 @@ class BookRepository implements BookRepositoryInterface
         return $books;
     }
 
-    public function findBook(str $bookName)
+    public function findBook(str $request)
     {
         $books = Book::where('name')->like("%" . $bookName . "%")->get();
         return $books;

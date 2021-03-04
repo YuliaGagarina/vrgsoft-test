@@ -1,6 +1,6 @@
 @extends('books.show')
 
-@section('modal-window')
+@section('modal-window-adding')
 
 <div class="addition" id="modal-add-book">
         <button class="close">Close</button>
@@ -19,3 +19,4 @@
             <button type="submit" class="btn-submit">Add book</button>
         </form>
     </div>
+@endsection

@@ -1,6 +1,6 @@
 @extends('authors.show')
 
-@section('modal-window')
+@section('modal-window-adding')
 
 
 <div class="addition" id="modal-add-author">
@@ -12,3 +12,5 @@
         <button type="submit" class="btn-submit">Add author</button>
     </form>
 </div>
+
+@endsection

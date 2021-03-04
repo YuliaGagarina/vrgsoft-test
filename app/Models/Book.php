@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Author;
 
 /**
  * Class Book
@@ -27,4 +28,9 @@ class Book extends Model
         'author_id',
         'publication'
     ];
+
+    public function authors()
+    {
+        return $this->hasMany(Author::class);
+    }
 }

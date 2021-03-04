@@ -49,9 +49,12 @@
         @endif
     </main> 
     <div class="modal-window">
-        @yield('modal-window')
+        @include('modal-window-adding')
+        @include('modal-window-editing')
     </div>
 
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/jquery.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
 </body>
 </html>

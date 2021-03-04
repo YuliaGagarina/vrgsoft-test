@@ -1,9 +1,7 @@
-require('./bootstrap');
-require('./jquery');
-
 global.$ = global.jQuery = require('jquery');
 
 $(document).ready(function(e) {
+    
 
     $('.add-author').on('click', function (e) {
         e.preventDefault();

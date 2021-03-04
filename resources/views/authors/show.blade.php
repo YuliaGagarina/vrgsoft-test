@@ -52,7 +52,8 @@
         </main>
         
         <div class="modal-window">
-            @yield('modal-window')
+            @include('modal-window-adding')
+            @include('modal-window-editing')
         </div>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>

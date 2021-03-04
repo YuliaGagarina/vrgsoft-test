@@ -28,47 +28,6 @@ class AuthorController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $author = $this->authorRepository->addauthor([
-            'fname' => request('fname'),
-            'lname' => request('lname'),
-            'fathername' => request('fathername'),
-        ]);
-
-        return 'Your book wad created successfully' . $author;
-    }
-
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-
-        if (Author::table('authors')->where('id', $id)) {
-
-            // Поискать детали к этому методу
-            $author = $this->authorRepository->updateAuthor($id);
-            $author->update($request->all());
-
-            return 'Your author wad updated successfully';
-        } else {
-            return 'Such author couldn`t be found.';
-        }
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -84,7 +43,7 @@ class AuthorController extends Controller
         }
     }
 
-    /**
+     /**
      * Display a sorted resource.
      *
      * @return \Illuminate\Http\Response
@@ -103,71 +62,72 @@ class AuthorController extends Controller
      */
     public function find(Request $request)
     {
-//        if ($request->ajax()) {
-//            $output = "";
-//            $authors = Author::where('fname','LIKE', '%'.$request->search.'%')
-//                ->orwhere('lname', 'LIKE', '%'. $request->search .'%')
-//                ->get();
-//        }
-//
-////        if ($authors) {
-//            foreach($authors as $key => $author){
-//                $output .= '<li>'.$author['fname'].' '.$author['lname'].' '.$author['fathername']
-//                            .'<a class="edit-author">Edit author</a>'
-//                            .'<a href="deleteAuthor/'.$author['id'].'"  class="delete-author">Delete author</a>'
-//                        .'</li>';
-//
-////            }
-//        }
-//
-//        return Response($output);
+       if ($request->ajax()) {
+           $output = "";
+           $authors = Author::where('fname','LIKE', '%'.$request->search.'%')
+               ->orwhere('lname', 'LIKE', '%'. $request->search .'%')
+               ->get();
+       }
+
+       if ($authors) {
+           foreach($authors as $key => $author){
+               $output .= '<li>'.$author['fname'].' '.$author['lname'].' '.$author['fathername']
+                           .'<a class="edit-author">Edit author</a>'
+                           .'<a href="deleteAuthor/'.$author['id'].'"  class="delete-author">Delete author</a>'
+                       .'</li>';
+
+           }
+       }
+
+       return Response($output);
     }
 
-
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function store(Request $request)
     {
-        //
+        $this->validate(request(), [
+            'fname' => 'required|min:3',
+        ]);
+
+        $author = $this->authorRepository->addauthor([
+            'fname' => request('fname'),
+            'lname' => request('lname'),
+            'fathername' => request('fathername'),
+        ]);
+
+        return 'Your author wad created successfully' . $author;
     }
 
+
+
     /**
-     * Display the specified resource.
+     * Update the specified resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function update(Request $request, $id)
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        if (Author::table('authors')->where('id', $id)) {
+            $this->validate(request(), [
+                'fname' => 'required|min:3',
+            ]);
     
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function showAllAuthors()
-    {
-        $authors = $this->authorRepository->viewAllAuthors();
-        $authData = $authors->toArray();
+            // Поискать детали к этому методу
+            $requestParams = request(['fname', 'lname', 'fathername']);
+            $author = $this->authorRepository->updateAuthor($id, $requestParams);
+            // $author->update($request->all());
 
-        return $authData; 
+            return 'Your author wad updated successfully';
+        } else {
+            return 'Such author couldn`t be found.';
+        }
     }
-
 }
