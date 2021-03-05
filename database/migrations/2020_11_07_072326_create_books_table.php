@@ -19,7 +19,6 @@ class CreateBooksTable extends Migration
             $table->text('description');
             $table->string('image')->unique();
             $table->string('author')->nullable(false);
-            $table->integer('author_id')->nullable(false);
             $table->date('publication')->nullable(false);
             $table->timestamps();
         });

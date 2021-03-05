@@ -46,14 +46,30 @@
                     @endforeach
                 </ol>
             </div>
-
-
-
         </main>
         
         <div class="modal-window">
-            @yield('modal-window')
+            <div class="addition" id="modal-add-author">
+                <button class="close">Close</button>
+                <form action="" class="addition-form" method="post">
+                    <input type="text" placeholder="Author first name">
+                    <input type="text" placeholder="Author second name">
+                    <input type="text" placeholder="Author's father name">
+                    <button type="submit" class="btn-submit">Add author</button>
+                </form>
+            </div>
+            <div class="edition" id="modal-edit-author">
+                <button class="close">Close</button>
+                <form class="edition-form" method="post">
+                    <input type="text" placeholder="Author first name" name="author_fname">
+                    <input type="text" placeholder="Author second name" name="author_sname">
+                    <input type="text" placeholder="Author's father name" name="author_fathers_name">
+                    <button type="submit" class="btn-submit">Save editions</button>
+                </form>
+            </div>
         </div>
+        <script src="{{ asset('js/jquery.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>

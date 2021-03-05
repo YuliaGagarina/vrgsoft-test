@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Repository\BookRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Models\Book;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Controller as BaseController;
 
 class BookController extends Controller
@@ -21,13 +23,27 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // DONE
     public function index()
     {
         $books = $this->bookRepository->viewAllBooks();
-        $bookData = $books->toArray();
-        return view('book', ['books' => $bookData['data']]);
+        $bookData = $books['books']->toArray();
+        $bookAuthData = $books['authors']->toArray();
+        return view('books/show', ['books' => $bookData['data'], 'authors' => $bookAuthData]);
     }
 
+    
+    /**
+     * Display a found by name resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function find(Request $request)
+    {
+        $books = $this->bookRepository->findBook();
+        // Передать данные в представление
+        return view('books/show');
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -37,20 +53,45 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-//        $this->validate($request, [
-//            'value' => 'required'
-//        ]);
-        $book = $this->bookRepository->addBook([
-            'name' => request('name'),
-            'description' => request('description'),
-            //Загрузка картинок
-            'image' => request('image'),
-            'author' => [request('author')],
-            'author_id' => $this->getAuthor()->id,
-            'publication' => request('publication')
-        ]);
+       $this->validate(request(), [
+            'book_name' => 'required',
+            'authors' => 'required',
+            'book_date' => 'required',
+        ]);    
+        $requestParams = request(['book_name',  'book_desc', 'book_image', 'authors', 'book_date' ]);
 
-        return 'Your book wad created successfully' . $book;
+        // Ниже написана попытка преобразовать множественный выбор селект. Если разберусь, то напишу по-человечески
+        // $requestParams['authors'] = '';
+        // foreach($authors as $author){
+        //     $requestParams['authors'] .= $author;
+        //     return $requestParams['authors'];
+        // }
+        
+        $image = $request->file('book_image')->store('uploads', 'public');
+        $requestParams['book_image'] = basename($image);
+        if(!$requestParams['book_name']){
+            echo "You have to fill the Book Name!";
+        } 
+        if(!$requestParams['book_date']){
+            echo "You have to fill the Book Publication Date!";
+        } 
+        if(!$requestParams['book_desc']){
+            $requestParams['book_desc'] = NULL;
+        }
+        if(!$requestParams['book_image']){
+            $requestParams['book_image'] = '';
+        } 
+
+        DB::insert('insert into books (name, description, image, author, publication) values (?, ?, ?, ?, ? )', 
+            [
+                $requestParams['book_name'], 
+                $requestParams['book_desc'], 
+                $requestParams['book_image'], 
+                $requestParams['authors'], 
+                $requestParams['book_date'],
+            ]
+        );
+        return redirect('/books'); 
     }
 
 
@@ -64,18 +105,27 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-//        if (Book::table('books')->where('id', $id)) {
-//
-//            // Поискать детали к этому методу
-//            $book = $this->bookRepository->updateBook($id);
-//            $book->update($request->all());
-//
-//            return 'Your book wad updated successfully';
-//        } else {
-//            return 'Such book couldn`t be found.';
-//        }
+    //    if (Book::table('books')->where('id', $id)) {
+        $this->validate(request(), [
+            'book_name' => 'required',
+            'authors' => 'required',
+            'book_date' => 'required',
+        ]);    
+
+        dd($request);
+        // $requestParams = request(['book_name',  'book_desc', 'book_image', 'authors', 'book_date' ]);
+        // $image = $request->file('book_image')->store('uploads', 'public');
+
+        //     $book = $this->bookRepository->updateBook($id, $requestParams);
+        //     $book->update($request->all());
+
+    //        return 'Your book wad updated successfully';
+    //    } else {
+    //        return 'Such book couldn`t be found.';
+    //    }
     }
 
+    //DONE
     /**
      * Remove the specified resource from storage.
      *
@@ -86,12 +136,13 @@ class BookController extends Controller
     {
         if (Book::where('id', $id)) {
             $book = $this->bookRepository->deleteBook($id);
-            return 'Your book wad deleted successfully';
+            return redirect('/books');
         } else {
             return 'Such book couldn`t be found.';
         }
     }
 
+    // DONE
     /**
      * Display a sorted resource.
      *
@@ -101,52 +152,10 @@ class BookController extends Controller
     {
         $books = $this->bookRepository->sortBooks();
         $bookData = $books->toArray();
-        dd($bookData);
-        return view('book', ['books' => $bookData]);
-    }
-
-    /**
-     * Display a found by name resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function find(Request $request)
-    {
-        $books = $this->bookRepository->findBook();
-        // Передать данные в представление
-        return view('book');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        return "<h1>you want to see the book</h1>";
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        return "<h1>you want to edit book</h1>";
+        // dd($bookData);
+        return view('books/show', ['books' => $bookData]);
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return "<h1>you are creating book!</h1>";
-    }
+
 }

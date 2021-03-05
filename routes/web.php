@@ -17,19 +17,24 @@ use App\Http\Controllers\AuthorController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::get('books', [BookController::class, 'index']);
-Route::get('/sortBooks', [BookController::class, 'sort']);
 Route::get('deleteBook/{id}', [BookController::class, 'destroy']);
-Route::post('search', [BookController::class, 'find']);
-//Route::post('addBook', [BookController::class, 'store']);
-//Route::put('editBook/{id}', [BookController::class, 'edit']);
+
+Route::get('sortBooks', [BookController::class, 'sort']);
+Route::get('search', [BookController::class, 'find']);
+
+Route::post('addBook', [BookController::class, 'store']);
+Route::put('editBook/{id}', [BookController::class, 'update']);
+
 
 Route::get('authors', [AuthorController::class, 'index']);
-Route::get('/sortAuthors', [AuthorController::class, 'sort']);
 Route::get('deleteAuthor/{id}', [AuthorController::class, 'destroy']);
+
+Route::get('sortAuthors', [AuthorController::class, 'sort']);
 Route::get('search', [AuthorController::class, 'find']);
-//Route::post('addAuthor', [AuthorController::class, 'store']);
-//Route::put('editAuthor/{id}', [AuthorController::class, 'edit']);
+
+Route::post('addAuthor', [AuthorController::class, 'store']);
+Route::put('editAuthor/{id}', [AuthorController::class, 'update']);

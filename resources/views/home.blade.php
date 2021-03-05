@@ -22,9 +22,9 @@
 <body>
     <main class="main">
     <!-- NEW STRING -->
-    <a href="{{ books/show.blade.php }}" class="btn">Books catalog</a>
+    <a href="/books" class="btn">Books catalog</a>
     <!-- NEW STRING -->
-    <a href="{{ authors/show.blade.php }}" class="btn">Authors catalog</a>
+    <a href="/authors" class="btn">Authors catalog</a>
     </main>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

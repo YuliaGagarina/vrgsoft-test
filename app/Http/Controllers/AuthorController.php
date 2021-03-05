@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repository\AuthorRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Models\Author;
+use Illuminate\Support\Facades\View;
 
 class AuthorController extends Controller
 {
@@ -20,11 +21,12 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // DONE
     public function index()
     {
         $authors = $this->authorRepository->viewAllAuthors();
         $authData = $authors->toArray();
-        return view('author', ['authors' => $authData['data']]);
+        return view('authors/show', ['authors' => $authData['data'], 'books' => $authData['data']]);
     }
 
     /**
@@ -35,6 +37,10 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate(request(), [
+            'fname' => 'required|min:3',
+        ]);
+
         $author = $this->authorRepository->addauthor([
             'fname' => request('fname'),
             'lname' => request('lname'),
@@ -57,10 +63,13 @@ class AuthorController extends Controller
     {
 
         if (Author::table('authors')->where('id', $id)) {
-
+            $this->validate(request(), [
+                'fname' => 'required|min:3',
+            ]);
             // Поискать детали к этому методу
-            $author = $this->authorRepository->updateAuthor($id);
-            $author->update($request->all());
+            $requestParams = request(['fname', 'lname', 'fathername']);
+            $author = $this->authorRepository->updateAuthor($id, $requestParams);
+            // $author->update($request->all());
 
             return 'Your author wad updated successfully';
         } else {
@@ -93,7 +102,7 @@ class AuthorController extends Controller
     {
         $authors = $this->authorRepository->sortAuthors();
         $authData = $authors->toArray();
-        return view('author', ['authors' => $authData]);
+        return view('authors/show', ['authors' => $authData]);
     }
 
     /**
@@ -103,71 +112,24 @@ class AuthorController extends Controller
      */
     public function find(Request $request)
     {
-//        if ($request->ajax()) {
-//            $output = "";
-//            $authors = Author::where('fname','LIKE', '%'.$request->search.'%')
-//                ->orwhere('lname', 'LIKE', '%'. $request->search .'%')
-//                ->get();
-//        }
-//
-////        if ($authors) {
-//            foreach($authors as $key => $author){
-//                $output .= '<li>'.$author['fname'].' '.$author['lname'].' '.$author['fathername']
-//                            .'<a class="edit-author">Edit author</a>'
-//                            .'<a href="deleteAuthor/'.$author['id'].'"  class="delete-author">Delete author</a>'
-//                        .'</li>';
-//
-////            }
-//        }
-//
-//        return Response($output);
-    }
+       if ($request->ajax()) {
+           $output = "";
+           $authors = Author::where('fname','LIKE', '%'.$request->search.'%')
+               ->orwhere('lname', 'LIKE', '%'. $request->search .'%')
+               ->get();
+       }
 
+       if ($authors) {
+           foreach($authors as $key => $author){
+               $output .= '<li>'.$author['fname'].' '.$author['lname'].' '.$author['fathername']
+                           .'<a class="edit-author">Edit author</a>'
+                           .'<a href="deleteAuthor/'.$author['id'].'"  class="delete-author">Delete author</a>'
+                       .'</li>';
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+           }
+       }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-    
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function showAllAuthors()
-    {
-        $authors = $this->authorRepository->viewAllAuthors();
-        $authData = $authors->toArray();
-
-        return $authData; 
+       return Response($output);
     }
 
 }

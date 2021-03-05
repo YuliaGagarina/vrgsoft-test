@@ -24,7 +24,6 @@ class Book extends Model
         'description',
         'image',
         'author',
-        'author_id',
         'publication'
     ];
 }

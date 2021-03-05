@@ -2,7 +2,7 @@
     display: flex;
     height: 60px;
 }
-a {
+a, button {
     min-width: 30px;
     padding: 10px 15px;
     border: 1px solid black;
@@ -13,7 +13,8 @@ a {
     background-color: mediumaquamarine;
 }
 
-a:hover {
+a:hover,
+button:hover {
     transform: scale(1.2);
 }
 
@@ -57,7 +58,16 @@ a:hover {
     height: 100px;
     margin: 0 auto 20px;
 }
+.book-element {
+    /* height: 45px; */
+    display: flex;
+    flex-direction: column;
+}
 
-li {
-    height: 45px;
+.author-span, .publication-span {
+    display: inline-block;
+}
+
+.book-btns {
+    margin: 20px 0;
 }

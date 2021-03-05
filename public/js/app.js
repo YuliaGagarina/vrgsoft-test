@@ -30231,6 +30231,57 @@ __webpack_require__(/*! ./jquery */ "./resources/js/jquery.js");
 
 global.$ = global.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 $(document).ready(function (e) {
+  $('btn-add-id').on('click', function (e) {
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    e.preventDefault();
+    var formData = {
+      name: $('#title').val(),
+      description: $('#description').val(),
+      image: $('#book_image').val(),
+      authors: $('#authors_id_select').val(),
+      date: $('book_date').val()
+    };
+    var state = jQuery('#btn-add-id').val();
+    var type = "POST";
+    var book_id = jQuery('#book_id').val();
+    var ajaxurl = '/addBook';
+    $.ajax({
+      type: type,
+      url: ajaxurl,
+      data: formData,
+      dataType: 'json',
+      success: function success(data) {
+        console.log(data); // var todo = '<tr id="todo' + data.id + '"><td>' + data.id + '</td><td>' + data.title + '</td><td>' + data.description + '</td>';
+        // if (state == "add") {
+        //     jQuery('#todo-list').append(todo);
+        // } else {
+        //     jQuery("#todo" + todo_id).replaceWith(todo);
+        // }
+        // jQuery('#myForm').trigger("reset");
+        // jQuery('#formModal').modal('hide')
+      },
+      error: function error(data) {
+        console.log(data);
+      }
+    });
+  });
+  $("#searchAuthor").on('keyup', function () {
+    $search = $(this).val();
+    $.ajax({
+      type: 'get',
+      url: '{{ URL::to("search") }}',
+      data: {
+        'search': $search
+      },
+      success: function success(data) {
+        console.log(data);
+      }
+    });
+  });
   $('.add-author').on('click', function (e) {
     e.preventDefault();
     $('.main').addClass('hidden-main');
@@ -30270,19 +30321,6 @@ $(document).ready(function (e) {
     e.preventDefault();
     $('.main').removeClass('hidden-main');
     $('.edition').hide();
-  });
-  $("#searchAuthor").on('keyup', function () {
-    $search = $(this).val();
-    $.ajax({
-      type: 'get',
-      url: '{{ URL::to("search") }}',
-      data: {
-        'search': $search
-      },
-      success: function success(data) {
-        console.log(data);
-      }
-    });
   });
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
@@ -39809,8 +39847,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\ПК\PhpstormProjects\test\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\ПК\PhpstormProjects\test\resources\css\app.css */"./resources/css/app.css");
+__webpack_require__(/*! D:\Я\PhpstormProjects\vrgsoft-test\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Я\PhpstormProjects\vrgsoft-test\resources\css\app.css */"./resources/css/app.css");
 
 
 /***/ })

@@ -11,19 +11,23 @@ namespace App\Repository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use App\Models\Book;
+use App\Models\Author;
 
 class BookRepository implements BookRepositoryInterface
 {
     private $model;
+    private $authModel;
 
     public function __construct()
     {
         $this->model = app(Book::class);
+        $this->authModel = app(Author::class);
     }
 
     public function viewAllBooks()
     {
-        $books = Book::paginate(15);
+        $books['books'] = Book::paginate(15);
+        $books['authors'] = Author::all();
         return $books;
     }
 
@@ -42,8 +46,10 @@ class BookRepository implements BookRepositoryInterface
 
     public function addBook(array $data)
     {
-        $this->model->fill($data)->save();
-        return $this->model->id;
+        DB::insert('insert into books (book_name) values (?)', [$data]);
+        // $this->model->fill($data)->save();
+        // return $this->model->id;
+        return $book;
     }
 
     public function deleteBook($id)
