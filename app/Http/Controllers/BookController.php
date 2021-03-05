@@ -112,7 +112,7 @@ class BookController extends Controller
             'book_date' => 'required',
         ]);    
 
-        dd($request);
+        // dd($request);
         // $requestParams = request(['book_name',  'book_desc', 'book_image', 'authors', 'book_date' ]);
         // $image = $request->file('book_image')->store('uploads', 'public');
 
