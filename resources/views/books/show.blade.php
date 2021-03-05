@@ -54,6 +54,7 @@
         @endif
     </main> 
     <div class="modal-window">
+<<<<<<< HEAD
         <div class="edition" id="modal-edit-book">
             <button class="close">Close</button>
             <form class="edition-form" action="/editBook" method="put" enctype="multipart/form-data">
@@ -95,9 +96,15 @@
                 <button type="submit" class="btn-submit" value="add" id="btn-add-id">Add book</button>
             </form>
         </div>
+=======
+        @include('modal-window-adding')
+        @include('modal-window-editing')
+>>>>>>> 10c852ad7f79b891ab9019580efd190ac38ee934
     </div>
     <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/jquery.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
 </body>
 </html>

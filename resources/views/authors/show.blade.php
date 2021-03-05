@@ -49,6 +49,7 @@
         </main>
         
         <div class="modal-window">
+<<<<<<< HEAD
             <div class="addition" id="modal-add-author">
                 <button class="close">Close</button>
                 <form action="" class="addition-form" method="post">
@@ -67,6 +68,10 @@
                     <button type="submit" class="btn-submit">Save editions</button>
                 </form>
             </div>
+=======
+            @include('modal-window-adding')
+            @include('modal-window-editing')
+>>>>>>> 10c852ad7f79b891ab9019580efd190ac38ee934
         </div>
         <script src="{{ asset('js/jquery.js') }}"></script>
         <script src="{{ asset('js/bootstrap.js') }}"></script>

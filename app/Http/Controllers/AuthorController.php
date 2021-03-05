@@ -93,7 +93,7 @@ class AuthorController extends Controller
         }
     }
 
-    /**
+     /**
      * Display a sorted resource.
      *
      * @return \Illuminate\Http\Response
@@ -131,5 +131,4 @@ class AuthorController extends Controller
 
        return Response($output);
     }
-
 }

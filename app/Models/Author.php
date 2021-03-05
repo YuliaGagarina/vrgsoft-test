@@ -21,4 +21,8 @@ class Author extends Model
         'lname',
         'fathername'
     ];
+
+    public function books() {
+        return $this->belongsToMany(Book::class);
+    }
 }

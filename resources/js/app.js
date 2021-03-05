@@ -1,9 +1,7 @@
-require('./bootstrap');
-require('./jquery');
-
 global.$ = global.jQuery = require('jquery');
 
 $(document).ready(function(e) {
+    
 
     $('btn-add-id').on('click', function(e){
         $.ajaxSetup({
