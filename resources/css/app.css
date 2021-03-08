@@ -18,11 +18,12 @@ button:hover {
     transform: scale(1.2);
 }
 
+.addition {
+    display: none;
+}
 .addition, .edition {
     border: 1px solid black;
     background-color: black;
-    display: none;
-
     width: 500px;
     margin: 20px;
     padding: 20px;

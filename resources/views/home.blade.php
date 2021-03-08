@@ -25,6 +25,7 @@
     <a href="/books" class="btn">Books catalog</a>
     <!-- NEW STRING -->
     <a href="/authors" class="btn">Authors catalog</a>
+    
     </main>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

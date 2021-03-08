@@ -15,48 +15,17 @@ use App\Models\Author;
 
 class BookRepository implements BookRepositoryInterface
 {
-    private $model;
-    private $authModel;
-
-    public function __construct()
-    {
-        $this->model = app(Book::class);
-        $this->authModel = app(Author::class);
-    }
-
-    public function viewAllBooks()
-    {
-        $books['books'] = Book::paginate(15);
-        $books['authors'] = Author::all();
-        return $books;
-    }
-
-    public function findBook(str $request)
-    {
-        $books = Book::where('name')->like("%" . $bookName . "%")->get();
-        return $books;
-    }
-
-
-    public function sortBooks()
-    {
-        $books = Book::orderBy('name', 'asc')->get();
-        return $books;
-    }
-
     public function addBook(array $data)
     {
-        DB::insert('insert into books (book_name) values (?)', [$data]);
-        // $this->model->fill($data)->save();
-        // return $this->model->id;
-        return $book;
-    }
-
-    public function deleteBook($id)
-    {
-        $book = Book::findOrFail($id);
-        $book->delete($book->all());
-        return $book;
+        DB::insert('insert into books (name, description, image, author, publication) values (?, ?, ?, ?, ? )', 
+            [
+                $data['book_name'], 
+                $data['book_desc'], 
+                $data['book_image'], 
+                $data['authors'], 
+                $data['book_date'],
+            ]
+        );
     }
 
     public function updateBook($id, array $data)
@@ -66,4 +35,38 @@ class BookRepository implements BookRepositoryInterface
         return $book;
     }
 
+    public function editBook($id)
+    {
+        $book['data'] = Book::findOrFail($id);
+        $book['authors'] = Author::all();
+        return $book;
+    }
+    
+    public function viewAllBooks()
+    {
+        $books['books'] = Book::paginate(15);
+        $books['authors'] = Author::all();
+        return $books;
+    }
+
+    public function findBook($request)
+    {
+        $books = Book::where('name', 'like', '%' . $request . '%')
+                    ->orWhere('author', 'like', '%' . $request . '%')
+                    ->get();
+        return $books;
+    }
+
+    public function sortBooks()
+    {
+        $books = Book::orderBy('name', 'asc')->get();
+        return $books;
+    }
+
+    public function deleteBook($id)
+    {
+        $book = Book::findOrFail($id);
+        $book->delete($book->all());
+        return $book;
+    }
 }

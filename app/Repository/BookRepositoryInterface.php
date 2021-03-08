@@ -12,7 +12,7 @@ interface BookRepositoryInterface
 {
 
     public function viewAllBooks();
-    public function findBook (str $author);
+    // public function findBook (str $author);
     public function sortBooks();
     public function addBook(array  $data);
     public function updateBook($id, array  $data);

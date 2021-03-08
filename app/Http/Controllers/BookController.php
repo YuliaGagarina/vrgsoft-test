@@ -19,33 +19,6 @@ class BookController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // DONE
-    public function index()
-    {
-        $books = $this->bookRepository->viewAllBooks();
-        $bookData = $books['books']->toArray();
-        $bookAuthData = $books['authors']->toArray();
-        return view('books/show', ['books' => $bookData['data'], 'authors' => $bookAuthData]);
-    }
-
-    
-    /**
-     * Display a found by name resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function find(Request $request)
-    {
-        $books = $this->bookRepository->findBook();
-        // Передать данные в представление
-        return view('books/show');
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -59,14 +32,11 @@ class BookController extends Controller
             'book_date' => 'required',
         ]);    
         $requestParams = request(['book_name',  'book_desc', 'book_image', 'authors', 'book_date' ]);
-
-        // Ниже написана попытка преобразовать множественный выбор селект. Если разберусь, то напишу по-человечески
-        // $requestParams['authors'] = '';
-        // foreach($authors as $author){
-        //     $requestParams['authors'] .= $author;
-        //     return $requestParams['authors'];
-        // }
-        
+        $auth = request('authors');
+        $requestParams['authors'] = '';
+        foreach($auth as $item) {
+            $requestParams['authors'] .= $item . "<br>";
+        }
         $image = $request->file('book_image')->store('uploads', 'public');
         $requestParams['book_image'] = basename($image);
         if(!$requestParams['book_name']){
@@ -82,20 +52,29 @@ class BookController extends Controller
             $requestParams['book_image'] = '';
         } 
 
-        DB::insert('insert into books (name, description, image, author, publication) values (?, ?, ?, ?, ? )', 
-            [
-                $requestParams['book_name'], 
-                $requestParams['book_desc'], 
-                $requestParams['book_image'], 
-                $requestParams['authors'], 
-                $requestParams['book_date'],
-            ]
-        );
+        $newBook = $this->bookRepository->addBook($requestParams);
         return redirect('/books'); 
     }
 
-
-
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        if (Book::where('id', $id)) {
+            $book = $this->bookRepository->editBook($id);
+            $newBook = $book['data']->toArray();
+            $newAuthors = $book['authors']->toArray();
+            return view('books/show', ['id'=> $id, 'newBook' => $newBook, 'newAuthors' => $newAuthors]); 
+        } else {
+            return 'Such book couldn`t be found.';
+        }        
+    }
+    
     /**
      * Update the specified resource in storage.
      *
@@ -105,27 +84,71 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-    //    if (Book::table('books')->where('id', $id)) {
-        $this->validate(request(), [
-            'book_name' => 'required',
-            'authors' => 'required',
-            'book_date' => 'required',
-        ]);    
+            $params = [];
+            if(!empty(request('id'))) {
+                $params['id'] = request('id');
+            } else {
+                return 'Such book couldn`t be found.';
+            }
 
-        // dd($request);
-        // $requestParams = request(['book_name',  'book_desc', 'book_image', 'authors', 'book_date' ]);
-        // $image = $request->file('book_image')->store('uploads', 'public');
+            if(!empty(request('new_book_name'))) {
+                $params['name'] = request('new_book_name');
+            } else {
+                return "You have to write Book name!";
+            }
 
-        //     $book = $this->bookRepository->updateBook($id, $requestParams);
-        //     $book->update($request->all());
+            if(!empty(request('new_book_desc'))) {
+                $params['description'] = request('new_book_desc');
+            }
 
-    //        return 'Your book wad updated successfully';
-    //    } else {
-    //        return 'Such book couldn`t be found.';
-    //    }
+            if(!empty(request('new_book_date'))) {
+                $params['publication'] = request('new_book_date');
+            } else {
+                return "You have to write Book publication date!";
+            }
+
+            if(!empty(request('new_book_image'))) {
+                $params['image'] = request('new_book_image');
+            }
+
+            if(!empty(request('authors'))) {
+                $auth = request('authors');
+                $params['authors'] = '';
+                foreach($auth as $item){
+                    $params['authors'] .= $item . "<br>";
+                }
+            }
+            $book = $this->bookRepository->updateBook($id, $params);
+            return redirect('/books');
     }
 
-    //DONE
+    /**
+     * Display a found by name resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function find(Request $request)
+    {        
+        $string = request('find_button');
+        $books = $this->bookRepository->findBook($string);
+        $bookData = $books->toArray();
+        return view('books/show', ['books' => $bookData]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $books = $this->bookRepository->viewAllBooks();
+        $bookData = $books['books']->toArray();
+        $bookAuthData = $books['authors']->toArray();
+        return view('books/show', ['books' => $bookData['data'], 'authors' => $bookAuthData]);
+    }
+    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -142,7 +165,6 @@ class BookController extends Controller
         }
     }
 
-    // DONE
     /**
      * Display a sorted resource.
      *
@@ -152,10 +174,6 @@ class BookController extends Controller
     {
         $books = $this->bookRepository->sortBooks();
         $bookData = $books->toArray();
-        // dd($bookData);
         return view('books/show', ['books' => $bookData]);
     }
-
-
-
 }

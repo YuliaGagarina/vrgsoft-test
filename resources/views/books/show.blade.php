@@ -23,14 +23,13 @@
         <h2>Hello on books page!</h2>
         <h4>Books list</h4>
         <div class="option-container">
-            <form>
+            <form action="/searchBook" method="get">
                 <p>You can try to find book here</p>
-                <input type="text" name="find-button" placeholder="Enter data">
-                <input type="submit" value="Find">
+                <input type="text" name="find_button" placeholder="Enter data" value="">
+                <button type="submit" class="find-book">Find</button>
             </form>
-            <a href="/sortBooks" class="sort-book">Sort books</a>
-            <a class="add-book">Add book</a>
-           
+            <a href="sortBooks" class="sort-book">Sort books</a>
+            <a class="add-book">Add book</a>           
         </div>
         @if(isset($books))
         <div class="content">
@@ -52,38 +51,41 @@
                 @endforeach
         </div>
         @endif
+        
     </main> 
+    
     <div class="modal-window">
-<<<<<<< HEAD
+        @if(isset($newBook))        
         <div class="edition" id="modal-edit-book">
-            <button class="close">Close</button>
-            <form class="edition-form" action="/editBook" method="put" enctype="multipart/form-data">
+            <button class="close">Close</button>            
+            <form method="patch" id="edition-book-form" class="edition-form" action="/editionBook/{{$newBook['id']}}"  enctype="multipart/form-data" data-id="{{$newBook['id']}}">
             {{csrf_field()}}
-                <input type="text" placeholder="New Book name" name="book_name">
-                <input type="textarea" placeholder="New Book description" name="book_desc">
-                <input type="file" placeholder="New Book image" name="book_image">
-                @if(isset($authors))
+                <input type="text" name="new_book_name" value="{{$newBook['name']}}">
+                <input type="textarea" name="new_book_desc" value="{{$newBook['description']}}">
+                <input type="file"  name="new_book_image" value="{{$newBook['image']}}">
+                @if(isset($newAuthors))
                 <label>Book author(s)</label>            
-                <select name="authors">
-                    @foreach($authors as $aKey => $author)
+                <select name="authors[]" multiple="multiple">
+                    @foreach($newAuthors as $aKey => $author)
                     <option value="{{$author['lname'] . ' ' . $author['fname']}}">{{ $author['lname'] . ' ' . $author['fname'] }}</option>
                     @endforeach
                 </select>
                 @endif 
-                <input type="text" placeholder="Another Publication date" class="publication-date" name="book_date">
+                <input type="text" placeholder="Another Publication date" class="publication-date" name="new_book_date" value="{{$newBook['publication']}}">
                 <button type="submit" class="btn-submit">Save editions</button>
             </form>
         </div>
+        @endif 
         <div class="addition" id="modal-add-book">
             <button class="close">Close</button>
-            <form class="addition-form" action="/addBook" method="post" enctype="multipart/form-data">
+            <form class="addition-form" id="addition-book-form" action="/addBook" method="post" enctype="multipart/form-data">
             {{csrf_field()}}
                 <input type="text" placeholder="Book name" name="book_name" id="book_name" value="">
                 <input type="textarea" placeholder="Book description" name="book_desc" id="book_desc" value="">
                 <input type="file" placeholder="Book image" name="book_image" id="book_image" >                
                 @if(isset($authors))
                 <label>Book author(s)</label>            
-                <select  name="authors" id="authors_id_select">
+                <select  name="authors[]" id="authors_id_select">
                 <!-- Ниже написан первоначальный вариант. Пока что оставляю 
                 одиночный выбор автора. Если получится разобраться - переделаю позже -->
                 <!-- <select  multiple="multiple" name="authors" id="authors_id_select"> -->
@@ -96,15 +98,7 @@
                 <button type="submit" class="btn-submit" value="add" id="btn-add-id">Add book</button>
             </form>
         </div>
-=======
-        @include('modal-window-adding')
-        @include('modal-window-editing')
->>>>>>> 10c852ad7f79b891ab9019580efd190ac38ee934
     </div>
-    <script src="{{ asset('js/jquery.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('js/jquery.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.js') }}"></script>
 </body>
 </html>

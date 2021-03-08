@@ -1,59 +1,115 @@
+require('./bootstrap');
+require('./jquery');
+
 global.$ = global.jQuery = require('jquery');
 
 $(document).ready(function(e) {
-    
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-    $('btn-add-id').on('click', function(e){
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+    $('#btn-add-author').on('click', function(e){
         e.preventDefault();
-        var formData = {
-            name: $('#title').val(),
-            description: $('#description').val(),
-            image: $('#book_image').val(),
-            authors: $('#authors_id_select').val(),
-            date: $('book_date').val()
-        };
-        var state = jQuery('#btn-add-id').val();
-        var type = "POST";
-        var book_id = jQuery('#book_id').val();
-        var ajaxurl = '/addBook';
+        var addAuthorData = {}
+        if($('author_fname').val().length > 2){
+            addAuthorData = {
+                fname = $('author_fname').val()
+            };
+        } else {
+            return 'This field is required or string is too short!';
+        }
+
+        if($('author_lname').val().length > 0){
+            addAuthorData = {
+                lname = $('author_lname').val()
+            };
+        } else {
+            return 'This field is required!';
+        }
+
+        if($('author_fathers_name').val().length > 0){
+            addAuthorData = {
+                fathername = $('author_fathers_name').val()
+            };
+        } else {
+            addAuthorData = {
+                fathername = ''
+            };
+        }
+        console.log(addAuthorData)
         $.ajax({
-            type: type,
-            url: ajaxurl,
-            data: formData,
+            type: "post",
+            url: "/addAuthor",
+            data: addAuthorData,
             dataType: 'json',
             success: function (data) {
-                console.log(data);
-                // var todo = '<tr id="todo' + data.id + '"><td>' + data.id + '</td><td>' + data.title + '</td><td>' + data.description + '</td>';
-                // if (state == "add") {
-                //     jQuery('#todo-list').append(todo);
-                // } else {
-                //     jQuery("#todo" + todo_id).replaceWith(todo);
-                // }
-                // jQuery('#myForm').trigger("reset");
-                // jQuery('#formModal').modal('hide')
+                console.log('Success');
+                $('#modal-add-author').modal('hide');
             },
             error: function (data) {
-                console.log(data);
+                console.log('Error');
             }
-        });
+        });        
     });
 
-    $("#searchAuthor").on('keyup', function(){
-        $search = $(this).val();
-        $.ajax({
-            type: 'get',
-            url: '{{ URL::to("search") }}',
-            data: {'search': $search},
-            success: function(data){
-                console.log(data);
-            }
-        });
-    });
+    // $('#addition-book-form').on('submit', function(e){
+    //     e.preventDefault();
+    //     var addBookData = {};
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/addBook",
+    //         data: addBookData,
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             console.log(data);
+    //         },
+    //         error: function (data) {
+    //             console.log(data);
+    //         }
+    //     });
+
+    //     $('#modal-add-book').modal('hide');
+    // });
+    // $('#edition-author-form').on('submit', function(e){
+    //     e.preventDefault();
+    //     var editAuthorData = {};
+    //     let id = $this->data('id);
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/editionAuthor/" + id,
+    //         data: editAuthorData,
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             console.log(data);
+    //         },
+    //         error: function (data) {
+    //             console.log(data);
+    //         }
+    //     });
+
+    //     $('#modal-edit-author').modal('hide');
+    // });
+    // $('#edition-book-form').on('submit', function(e){
+    //     e.preventDefault();
+    //     var editBookData = {};
+    //     let id = $this->data('id); 
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/editionBook/" + id,
+    //         data: editBookData,
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             console.log(data);
+    //         },
+    //         error: function (data) {
+    //             console.log(data);
+    //         }
+    //     });
+
+    //     $('#modal-edit-book').modal('hide');
+    // });
 
     $('.add-author').on('click', function (e) {
         e.preventDefault();
@@ -66,11 +122,11 @@ $(document).ready(function(e) {
         $('.addition').hide();
     });
 
-    $('.edit-author').on('click', function (e) {
-        e.preventDefault();
-        $('.main').addClass('hidden-main');
-        $('#modal-edit-author').show();
-    });
+    // $('.edit-author').on('click', function (e) {
+    //     // e.preventDefault();
+    //     $('.main').addClass('hidden-main');
+    //     $('#modal-edit-author').show();
+    // });
 
     $('.close').on('click', function (e) {
         e.preventDefault();
@@ -89,14 +145,12 @@ $(document).ready(function(e) {
         $('.addition').hide();
     });
 
-    $('.edit-book').on('click', function (e) {
-        e.preventDefault();
-        $('.main').addClass('hidden-main');
-        $('#modal-edit-book').show();
-    });
-
+    if(!$('#modal-edit-book').length == 0)  {
+        $('.main').addClass('hidden-main'); 
+    }
+    
+    
     $('.close').on('click', function (e) {
-        e.preventDefault();
         $('.main').removeClass('hidden-main');
         $('.edition').hide();
     });

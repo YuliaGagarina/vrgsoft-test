@@ -12,7 +12,7 @@ namespace App\Repository;
 interface AuthorRepositoryInterface
 {
     public function viewAllAuthors();
-    public function findAuthor(str $author);
+    public function findAuthor(str $request);
     public function sortAuthors();
     public function addAuthor(array  $data);
     public function updateAuthor($id, array  $data);

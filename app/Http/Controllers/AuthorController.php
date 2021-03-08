@@ -17,11 +17,58 @@ class AuthorController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        // dd($id);
+        if (Author::where('id', $id)) {
+            $author = $this->authorRepository->editAuthor($id);
+            // dd($author);
+            $newAuthor = $author->toArray();
+            return view('authors/show', ['id'=> $id, 'newAuthor' => $newAuthor]); 
+        } else {
+            return 'Such author couldn`t be found.';
+        }        
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $data = [];
+        if(!empty(request('new_author_fname')) && strlen(request('new_author_fname')) > 2){
+            $data['fname'] = request('new_author_fname');
+        } else {
+            return 'This field is required!';
+        }
+
+        if(!empty(request('new_author_sname'))){
+            $data['lname'] = request('new_author_sname');
+        } else {
+            return 'This field is required!';
+        }
+
+        if(!empty(request('new_author_fathers_name'))){
+            $data['fathername'] = request('new_author_fathers_name');
+        } 
+        $author = $this->authorRepository->updateAuthor($id, $data);
+        return redirect('/authors');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    // DONE
     public function index()
     {
         $authors = $this->authorRepository->viewAllAuthors();
@@ -37,44 +84,34 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(request(), [
-            'fname' => 'required|min:3',
-        ]);
-
-        $author = $this->authorRepository->addauthor([
-            'fname' => request('fname'),
-            'lname' => request('lname'),
-            'fathername' => request('fathername'),
-        ]);
-
-        return 'Your book wad created successfully' . $author;
-    }
-
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-
-        if (Author::table('authors')->where('id', $id)) {
-            $this->validate(request(), [
-                'fname' => 'required|min:3',
-            ]);
-            // Поискать детали к этому методу
-            $requestParams = request(['fname', 'lname', 'fathername']);
-            $author = $this->authorRepository->updateAuthor($id, $requestParams);
-            // $author->update($request->all());
-
-            return 'Your author wad updated successfully';
+        $data = [];
+        if($request->ajax()) {
+            [
+                $data['fname'] = $request->fname,
+                $data['lname'] = $request->lname,
+                $data['fathername'] = $request->fathername,
+            ];
         } else {
-            return 'Such author couldn`t be found.';
-        }
+            if(!empty(request('author_fname')) && strlen(request('author_fname')) > 2){
+                $data['fname'] = request('author_fname');
+            } else {
+                return 'This field is required or string is too short!';
+            }
+    
+            if(!empty(request('author_lname'))){
+                $data['lname'] = request('author_lname');
+            } else {
+                return 'This field is required!';
+            }
+    
+            if(!empty(request('author_fathers_name'))){
+                $data['fathername'] = request('author_fathers_name');
+            }  else {
+                $data['fathername'] = '';
+            }
+        }        
+        $author = $this->authorRepository->addauthor($data);
+        return redirect('/authors');
     }
 
     /**
@@ -112,23 +149,27 @@ class AuthorController extends Controller
      */
     public function find(Request $request)
     {
-       if ($request->ajax()) {
-           $output = "";
-           $authors = Author::where('fname','LIKE', '%'.$request->search.'%')
-               ->orwhere('lname', 'LIKE', '%'. $request->search .'%')
-               ->get();
-       }
+        $string = request('find_button');
+        $authors = $this->authorRepository->findAuthor($string);
+        $authData = $authors->toArray();
+        return view('authors/show', ['authors' => $authData]);
+    //    if ($request->ajax()) {
+    //        $output = "";
+    //        $authors = Author::where('fname','LIKE', '%'.$request->search.'%')
+    //            ->orwhere('lname', 'LIKE', '%'. $request->search .'%')
+    //            ->get();
+    //    }
 
-       if ($authors) {
-           foreach($authors as $key => $author){
-               $output .= '<li>'.$author['fname'].' '.$author['lname'].' '.$author['fathername']
-                           .'<a class="edit-author">Edit author</a>'
-                           .'<a href="deleteAuthor/'.$author['id'].'"  class="delete-author">Delete author</a>'
-                       .'</li>';
+    //    if ($authors) {
+    //        foreach($authors as $key => $author){
+    //            $output .= '<li>'.$author['fname'].' '.$author['lname'].' '.$author['fathername']
+    //                        .'<a class="edit-author">Edit author</a>'
+    //                        .'<a href="deleteAuthor/'.$author['id'].'"  class="delete-author">Delete author</a>'
+    //                    .'</li>';
 
-           }
-       }
+    //        }
+    //    }
 
-       return Response($output);
+    //    return Response($output);
     }
 }

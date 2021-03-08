@@ -20,6 +20,7 @@ use App\Models\Author;
 
 class Book extends Model
 {
+    protected $table = 'books'; 
     protected $fillable = [
         'name',
         'description',
@@ -28,8 +29,6 @@ class Book extends Model
         'publication'
     ];
 
-    public function authors()
-    {
-        return $this->hasMany(Author::class);
-    }
+    
+
 }
