@@ -85,10 +85,7 @@
                 <input type="file" placeholder="Book image" name="book_image" id="book_image" >                
                 @if(isset($authors))
                 <label>Book author(s)</label>            
-                <select  name="authors[]" id="authors_id_select">
-                <!-- Ниже написан первоначальный вариант. Пока что оставляю 
-                одиночный выбор автора. Если получится разобраться - переделаю позже -->
-                <!-- <select  multiple="multiple" name="authors" id="authors_id_select"> -->
+                <select multiple="multiple"  name="authors[]" id="authors_id_select">
                     @foreach($authors as $aKey => $author)
                     <option value="{{$author['lname'] . ' ' . $author['fname']}}" name="authors">{{ $author['lname'] . ' ' . $author['fname'] }}</option>
                     @endforeach

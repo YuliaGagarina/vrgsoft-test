@@ -25,33 +25,60 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-       $this->validate(request(), [
-            'book_name' => 'required',
-            'authors' => 'required',
-            'book_date' => 'required',
-        ]);    
-        $requestParams = request(['book_name',  'book_desc', 'book_image', 'authors', 'book_date' ]);
-        $auth = request('authors');
-        $requestParams['authors'] = '';
-        foreach($auth as $item) {
-            $requestParams['authors'] .= $item . "<br>";
+    {      
+        if($request->ajax()) {
+            $this->validate([
+                $this->book_name => 'required',
+                $this->authors => 'required',
+                $this->book_date => 'required',
+            ]);  
+            $requestParams = [$this->book_name,  $this->book_desc, $this->book_image, $this->authors, $this->book_date ];
+            $auth = $this->authors;
+            $requestParams[$this->authors] = '';
+            foreach($auth as $item) {
+                $requestParams[$this->authors] .= $item . "<br>";
+            }
+            $image = $request->file($this->book_image)->store('uploads', 'public');
+            $requestParams[$this->book_image] = basename($image);
+            if(!$requestParams[$this->book_name]){
+                echo "You have to fill the Book Name!";
+            } 
+            if(!$requestParams[$this->book_date]){
+                echo "You have to fill the Book Publication Date!";
+            } 
+            if(!$requestParams[$this->book_desc]){
+                $requestParams[ $this->book_desc] = '';
+            }
+            if(!$requestParams[$this->book_image]){
+                $requestParams[$this->book_image] = '';
+            } 
+        } else {
+            $this->validate(request(), [
+                'book_name' => 'required',
+                'authors' => 'required',
+                'book_date' => 'required',
+            ]);  
+            $requestParams = request(['book_name',  'book_desc', 'book_image', 'authors', 'book_date' ]);
+            $auth = request('authors');
+            $requestParams['authors'] = '';
+            foreach($auth as $item) {
+                $requestParams['authors'] .= $item . "<br>";
+            }
+            $image = $request->file('book_image')->store('uploads', 'public');
+            $requestParams['book_image'] = basename($image);
+            if(!$requestParams['book_name']){
+                echo "You have to fill the Book Name!";
+            } 
+            if(!$requestParams['book_date']){
+                echo "You have to fill the Book Publication Date!";
+            } 
+            if(!$requestParams['book_desc']){
+                $requestParams['book_desc'] = NULL;
+            }
+            if(!$requestParams['book_image']){
+                $requestParams['book_image'] = '';
+            } 
         }
-        $image = $request->file('book_image')->store('uploads', 'public');
-        $requestParams['book_image'] = basename($image);
-        if(!$requestParams['book_name']){
-            echo "You have to fill the Book Name!";
-        } 
-        if(!$requestParams['book_date']){
-            echo "You have to fill the Book Publication Date!";
-        } 
-        if(!$requestParams['book_desc']){
-            $requestParams['book_desc'] = NULL;
-        }
-        if(!$requestParams['book_image']){
-            $requestParams['book_image'] = '';
-        } 
-
         $newBook = $this->bookRepository->addBook($requestParams);
         return redirect('/books'); 
     }
@@ -85,6 +112,41 @@ class BookController extends Controller
     public function update(Request $request, $id)
     {
             $params = [];
+        if($request->ajax()) {
+            if(!empty($this->id)) {
+                $params['id'] = $this->id;
+            } else {
+                return 'Such book couldn`t be found.';
+            }
+
+            if(!empty($this->new_book_name)) {
+                $params['name'] = $this->new_book_name;
+            } else {
+                return "You have to write Book name!";
+            }
+
+            if(!empty($this->new_book_desc)) {
+                $params['description'] = $this->new_book_desc;
+            }
+
+            if(!empty($this->new_book_date)) {
+                $params['publication'] = $this->new_book_date;
+            } else {
+                return "You have to write Book publication date!";
+            }
+
+            if(!empty($this->new_book_image)) {
+                $params['image'] = $this->new_book_image;
+            }
+
+            if(!empty($this->authors)) {
+                $auth = $this->authors;
+                $params['authors'] = '';
+                foreach($auth as $item){
+                    $params['authors'] .= $item . "<br>";
+                }
+            }
+        } else {
             if(!empty(request('id'))) {
                 $params['id'] = request('id');
             } else {
@@ -118,8 +180,9 @@ class BookController extends Controller
                     $params['authors'] .= $item . "<br>";
                 }
             }
-            $book = $this->bookRepository->updateBook($id, $params);
-            return redirect('/books');
+        }
+        $book = $this->bookRepository->updateBook($id, $params);
+        return redirect('/books');
     }
 
     /**

@@ -10,104 +10,67 @@ $(document).ready(function(e) {
         }
     });
 
-    $('#btn-add-author').on('click', function(e){
-        e.preventDefault();
-        var addAuthorData = {}
-        if($('author_fname').val().length > 2){
-            addAuthorData = {
-                fname = $('author_fname').val()
-            };
-        } else {
-            return 'This field is required or string is too short!';
-        }
-
-        if($('author_lname').val().length > 0){
-            addAuthorData = {
-                lname = $('author_lname').val()
-            };
-        } else {
-            return 'This field is required!';
-        }
-
-        if($('author_fathers_name').val().length > 0){
-            addAuthorData = {
-                fathername = $('author_fathers_name').val()
-            };
-        } else {
-            addAuthorData = {
-                fathername = ''
-            };
-        }
-        console.log(addAuthorData)
-        $.ajax({
-            type: "post",
-            url: "/addAuthor",
-            data: addAuthorData,
-            dataType: 'json',
-            success: function (data) {
-                console.log('Success');
-                $('#modal-add-author').modal('hide');
-            },
-            error: function (data) {
-                console.log('Error');
-            }
-        });        
-    });
-
-    // $('#addition-book-form').on('submit', function(e){
-    //     e.preventDefault();
-    //     var addBookData = {};
+    // $('#addition-book-form').submit(function(e) {
+    //     var $form = $(this);
     //     $.ajax({
-    //         type: "POST",
-    //         url: "/addBook",
-    //         data: addBookData,
-    //         dataType: 'json',
-    //         success: function (data) {
-    //             console.log(data);
-    //         },
-    //         error: function (data) {
-    //             console.log(data);
-    //         }
+    //       type: $form.attr('method'),
+    //       url: $form.attr('action'),
+    //       data: $form.serialize()
+    //     }).done(function() {
+    //       console.log('success');
+    //     }).fail(function() {
+    //       console.log('fail');
     //     });
-
+    //     //отмена действия по умолчанию для кнопки submit
+    //     e.preventDefault(); 
     //     $('#modal-add-book').modal('hide');
     // });
-    // $('#edition-author-form').on('submit', function(e){
-    //     e.preventDefault();
-    //     var editAuthorData = {};
-    //     let id = $this->data('id);
-    //     $.ajax({
-    //         type: "GET",
-    //         url: "/editionAuthor/" + id,
-    //         data: editAuthorData,
-    //         dataType: 'json',
-    //         success: function (data) {
-    //             console.log(data);
-    //         },
-    //         error: function (data) {
-    //             console.log(data);
-    //         }
-    //     });
 
-    //     $('#modal-edit-author').modal('hide');
+    // $('#addition-book-form').submit(function(e) {
+    //     var $form = $(this);
+    //     $.ajax({
+    //       type: $form.attr('method'),
+    //       url: $form.attr('action'),
+    //       data: $form.serialize()
+    //     }).done(function() {
+    //       console.log('success');
+    //     }).fail(function() {
+    //       console.log('fail');
+    //     });
+    //     //отмена действия по умолчанию для кнопки submit
+    //     e.preventDefault(); 
+    //     $('#modal-add-book').modal('hide');
     // });
-    // $('#edition-book-form').on('submit', function(e){
-    //     e.preventDefault();
-    //     var editBookData = {};
-    //     let id = $this->data('id); 
-    //     $.ajax({
-    //         type: "GET",
-    //         url: "/editionBook/" + id,
-    //         data: editBookData,
-    //         dataType: 'json',
-    //         success: function (data) {
-    //             console.log(data);
-    //         },
-    //         error: function (data) {
-    //             console.log(data);
-    //         }
-    //     });
 
+    // $('#edition-author-form').submit(function(e) {
+    //     var $form = $(this);
+    //     $.ajax({
+    //       type: $form.attr('method'),
+    //       url: $form.attr('action'),
+    //       data: $form.serialize()
+    //     }).done(function() {
+    //       console.log('success');
+    //     }).fail(function() {
+    //       console.log('fail');
+    //     });
+    //     //отмена действия по умолчанию для кнопки submit
+    //     e.preventDefault(); 
+    //     $('#modal-edit-author').modal('hide');
+    //   });
+
+    // $('#edition-book-form').submit(function(e) {
+    //     var $form = $(this);
+    //     $.ajax({
+    //       type: $form.attr('method'),
+    //       url: $form.attr('action'),
+    //       data: $form.serialize()
+    //     }).done(function() {
+    //       console.log('success');
+    //     }).fail(function() {
+    //       console.log('fail');
+    //     });
+    //     //отмена действия по умолчанию для кнопки submit
+    //     e.preventDefault(); 
     //     $('#modal-edit-book').modal('hide');
     // });
 
@@ -121,12 +84,6 @@ $(document).ready(function(e) {
         $('.main').removeClass('hidden-main');
         $('.addition').hide();
     });
-
-    // $('.edit-author').on('click', function (e) {
-    //     // e.preventDefault();
-    //     $('.main').addClass('hidden-main');
-    //     $('#modal-edit-author').show();
-    // });
 
     $('.close').on('click', function (e) {
         e.preventDefault();

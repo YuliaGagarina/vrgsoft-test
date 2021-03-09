@@ -45,23 +45,43 @@ class AuthorController extends Controller
     public function update(Request $request, $id)
     {
         $data = [];
-        if(!empty(request('new_author_fname')) && strlen(request('new_author_fname')) > 2){
-            $data['fname'] = request('new_author_fname');
+        if($request->ajax()) {
+            if(!empty($this->new_author_fname) && strlen($this->new_author_fname) > 2){
+                $data['fname'] = $this->new_author_fname;
+            } else {
+                return 'This field is required or string is too short!';
+            }
+    
+            if(!empty($this->new_author_sname)){
+                $data['lname'] = $this->new_author_sname;
+            } else {
+                return 'This field is required!';
+            }
+    
+            if(!empty($this->new_author_fathers_name)){
+                $data['fathername'] = $this->new_author_fathers_name;
+            }  else {
+                $data['fathername'] = '';
+            }
         } else {
-            return 'This field is required!';
-        }
+            if(!empty(request('new_author_fname')) && strlen(request('new_author_fname')) > 2){
+                $data['fname'] = request('new_author_fname');
+            } else {
+                return 'This field is required!';
+            }
 
-        if(!empty(request('new_author_sname'))){
-            $data['lname'] = request('new_author_sname');
-        } else {
-            return 'This field is required!';
-        }
+            if(!empty(request('new_author_sname'))){
+                $data['lname'] = request('new_author_sname');
+            } else {
+                return 'This field is required!';
+            }
 
-        if(!empty(request('new_author_fathers_name'))){
-            $data['fathername'] = request('new_author_fathers_name');
-        } 
-        $author = $this->authorRepository->updateAuthor($id, $data);
-        return redirect('/authors');
+            if(!empty(request('new_author_fathers_name'))){
+                $data['fathername'] = request('new_author_fathers_name');
+            } 
+            $author = $this->authorRepository->updateAuthor($id, $data);
+            return redirect('/authors');
+        }
     }
 
     /**
@@ -86,11 +106,23 @@ class AuthorController extends Controller
     {
         $data = [];
         if($request->ajax()) {
-            [
-                $data['fname'] = $request->fname,
-                $data['lname'] = $request->lname,
-                $data['fathername'] = $request->fathername,
-            ];
+            if(!empty($this->author_fname) && strlen($this->author_fname) > 2){
+                $data['fname'] = $this->author_fname;
+            } else {
+                return 'This field is required or string is too short!';
+            }
+    
+            if(!empty($this->author_lname)){
+                $data['lname'] = $this->author_lname;
+            } else {
+                return 'This field is required!';
+            }
+    
+            if(!empty($this->author_fathers_name)){
+                $data['fathername'] = $this->author_fathers_name;
+            }  else {
+                $data['fathername'] = '';
+            }
         } else {
             if(!empty(request('author_fname')) && strlen(request('author_fname')) > 2){
                 $data['fname'] = request('author_fname');
